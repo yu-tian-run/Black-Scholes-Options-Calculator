@@ -1,7 +1,4 @@
-"""
-Black-Scholes Options Pricing and Greeks Calculator
-A focused implementation of the Black-Scholes-Merton model for derivatives pricing
-"""
+
 import numpy as np
 from scipy.stats import norm
 from dataclasses import dataclass
@@ -10,7 +7,7 @@ from typing import Dict
 
 @dataclass
 class OptionInputs:
-    """Input parameters for option pricing"""
+    # Input parameters for option pricing
     spot_price: float      # Current stock price (S)
     strike_price: float    # Strike price (K)
     time_to_expiry: float  # Time to expiration in years (T)
@@ -21,27 +18,17 @@ class OptionInputs:
 
 
 class BlackScholesCalculator:
-    """
-    Black-Scholes-Merton option pricing model with Greeks calculation
-    
-    This implements the closed-form solution for European options pricing
-    and calculates all first-order Greeks for risk management.
-    """
+    # Black-Scholes-Merton option pricing model with Greeks calculation
     
     def __init__(self, inputs: OptionInputs):
-        """
-        Initialize calculator with option parameters
-        
-        Args:
-            inputs: OptionInputs dataclass with all required parameters
-        """
+        # Initialize calculator with option parameters
         self.inputs = inputs
         self.d1 = None
         self.d2 = None
-        self._calculate_d_values()
+        self.calc_d_values()
     
-    def _calculate_d_values(self):
-        """Calculate d1 and d2 parameters for Black-Scholes formula"""
+    def calc_d_values(self):
+        # Calculate d1 and d2 parameters for Black-Scholes formula
         S = self.inputs.spot_price
         K = self.inputs.strike_price
         T = self.inputs.time_to_expiry
@@ -52,13 +39,8 @@ class BlackScholesCalculator:
         self.d1 = (np.log(S / K) + (r - q + 0.5 * sigma**2) * T) / (sigma * np.sqrt(T))
         self.d2 = self.d1 - sigma * np.sqrt(T)
     
-    def calculate_price(self) -> float:
-        """
-        Calculate option price using Black-Scholes formula
-        
-        Returns:
-            Option price
-        """
+    def calc_price(self) -> float:
+        # Calculate option price using Black-Scholes formula
         S = self.inputs.spot_price
         K = self.inputs.strike_price
         T = self.inputs.time_to_expiry
@@ -74,11 +56,8 @@ class BlackScholesCalculator:
         
         return float(price)
     
-    def calculate_delta(self) -> float:
-        """
-        Calculate Delta: ∂V/∂S
-        Measures rate of change of option price with respect to stock price
-        """
+    def calc_delta(self) -> float:
+        # Calculate Delta: ∂V/∂S
         q = self.inputs.dividend_yield
         T = self.inputs.time_to_expiry
         
@@ -89,11 +68,8 @@ class BlackScholesCalculator:
         
         return float(delta)
     
-    def calculate_gamma(self) -> float:
-        """
-        Calculate Gamma: ∂²V/∂S²
-        Measures rate of change of Delta with respect to stock price
-        """
+    def calc_gamma(self) -> float:
+        # Calculate Gamma: ∂²V/∂S²
         S = self.inputs.spot_price
         T = self.inputs.time_to_expiry
         sigma = self.inputs.volatility
@@ -102,11 +78,8 @@ class BlackScholesCalculator:
         gamma = (np.exp(-q * T) * norm.pdf(self.d1)) / (S * sigma * np.sqrt(T))
         return float(gamma)
     
-    def calculate_vega(self) -> float:
-        """
-        Calculate Vega: ∂V/∂σ
-        Measures sensitivity to volatility (per 1% change)
-        """
+    def calc_vega(self) -> float:
+        # Calculate Vega: ∂V/∂σ
         S = self.inputs.spot_price
         T = self.inputs.time_to_expiry
         q = self.inputs.dividend_yield
@@ -114,11 +87,8 @@ class BlackScholesCalculator:
         vega = S * np.exp(-q * T) * norm.pdf(self.d1) * np.sqrt(T)
         return float(vega / 100)  # Per 1% change in volatility
     
-    def calculate_theta(self) -> float:
-        """
-        Calculate Theta: ∂V/∂T
-        Measures time decay (per day)
-        """
+    def calc_theta(self) -> float:
+        # Calculate Theta: ∂V/∂T
         S = self.inputs.spot_price
         K = self.inputs.strike_price
         T = self.inputs.time_to_expiry
@@ -137,24 +107,19 @@ class BlackScholesCalculator:
         
         return float(theta / 365)  # Per day
     
-    def calculate_all_greeks(self) -> Dict[str, float]:
-        """
-        Calculate option price and all Greeks in one call
-        
-        Returns:
-            Dictionary containing price and all Greeks
-        """
+    def calc_greeks(self) -> Dict[str, float]:
+        # Calculate option price and all Greeks in one call
         return {
-            'price': self.calculate_price(),
-            'delta': self.calculate_delta(),
-            'gamma': self.calculate_gamma(),
-            'vega': self.calculate_vega(),
-            'theta': self.calculate_theta()
+            'price': self.calc_price(),
+            'delta': self.calc_delta(),
+            'gamma': self.calc_gamma(),
+            'vega': self.calc_vega(),
+            'theta': self.calc_theta()
         }
     
     def display_results(self):
-        """Display pricing results in a formatted manner"""
-        results = self.calculate_all_greeks()
+        # Display result from calc_greeks()
+        results = self.calc_greeks()
         
         print("=" * 60)
         print("BLACK-SCHOLES OPTION PRICING & GREEKS")
@@ -176,9 +141,7 @@ class BlackScholesCalculator:
 
 
 def main():
-    """
-    Example usage of the Black-Scholes calculator
-    """
+    # Example usage of the Black-Scholes calculator 
     # Define option parameters
     inputs = OptionInputs(
         spot_price=100.0,
@@ -195,7 +158,7 @@ def main():
     calculator.display_results()
     
     # Get results as dictionary for further processing
-    results = calculator.calculate_all_greeks()
+    results = calculator.calc_greeks()
     
     print("\n\nExample: Calculating for a PUT option")
     print("-" * 60)
