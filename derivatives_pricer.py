@@ -117,28 +117,6 @@ class BlackScholesCalculator:
             'theta': self.calc_theta()
         }
     
-    def display_results(self):
-        # Display result from calc_greeks()
-        results = self.calc_greeks()
-        
-        print("=" * 60)
-        print("BLACK-SCHOLES OPTION PRICING & GREEKS")
-        print("=" * 60)
-        print(f"\nOption Type: {self.inputs.option_type.upper()}")
-        print(f"Spot Price: ${self.inputs.spot_price:.2f}")
-        print(f"Strike Price: ${self.inputs.strike_price:.2f}")
-        print(f"Time to Expiry: {self.inputs.time_to_expiry:.4f} years ({self.inputs.time_to_expiry*365:.0f} days)")
-        print(f"Volatility: {self.inputs.volatility*100:.2f}%")
-        print(f"Risk-Free Rate: {self.inputs.risk_free_rate*100:.2f}%")
-        
-        print(f"\n{'OPTION PRICE':.<40} ${results['price']:.4f}")
-        print("\nGREEKS:")
-        print(f"{'Delta (Δ) - Price sensitivity':.<40} {results['delta']:.6f}")
-        print(f"{'Gamma (Γ) - Delta sensitivity':.<40} {results['gamma']:.6f}")
-        print(f"{'Vega (ν) - Volatility sensitivity':.<40} {results['vega']:.6f}")
-        print(f"{'Theta (Θ) - Time decay per day':.<40} {results['theta']:.6f}")
-        print("=" * 60)
-
 
 def main():
     # Example usage of the Black-Scholes calculator 
@@ -173,7 +151,6 @@ def main():
     )
     
     put_calculator = BlackScholesCalculator(put_inputs)
-    put_calculator.display_results()
 
 
 if __name__ == "__main__":
